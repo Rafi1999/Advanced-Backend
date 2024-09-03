@@ -1,24 +1,26 @@
 import dotenv from "dotenv";
 import connectDB from "./db/index.js";
-
+import { app } from "./app.js"; // Correct import path and destructure if named export is used.
 
 dotenv.config({
-    path: './env'
+  path: './env'  // Ensure the path is correct if your .env file is not in the root
 });
 
 connectDB()
-.then(() => {
+  .then(() => {
     app.on('error', (error) => {
-        console.log("err : ",error);
-        throw error;
-    })
-    app.listen(process.env.PORT || 8000,()=>{
-        console.log(`Server started at port ${process.env.PORT}`);
-    })
-})
-.catch(err => {
-    console.log("Mongo db connection failed ",err);
-})
+      console.error("Error starting the server:", error);
+      throw error;
+    });
+
+    const PORT = parseInt(process.env.PORT, 10) || 8000;  // Ensure it's a number
+    app.listen(PORT, () => {
+      console.log(`Server started at port ${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error("MongoDB connection failed:", err);
+  });
 
 
 
